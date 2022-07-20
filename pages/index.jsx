@@ -1,7 +1,9 @@
 import { Layout } from "../components";
 import Link from "next/link";
-
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 const Index = () => {
+
     return (
         <Layout>
             <h2>Index component</h2>

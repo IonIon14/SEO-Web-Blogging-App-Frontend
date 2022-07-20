@@ -1,85 +1,96 @@
-import { useState } from "react";
-import { signup } from "../../actions/auth";
-import Wrapper from "../../styles/SignUpComponent.module";
-const SignUpComponent = () => {
+import { useState, useEffect } from 'react';
+import { signup, isAuth } from '../../actions/auth';
+import Router from 'next/router';
 
-
-    const initialState = {
-        name: '',
-        email: '',
-        password: '',
+const SignupComponent = () => {
+    const [values, setValues] = useState({
+        name: 'Ryan',
+        email: 'ryan@gmail.com',
+        password: 'rrrrrr',
         error: '',
         loading: false,
         message: '',
-        showForm: true
-    }
+        showForm: true,
+        role: 0
+    });
 
-    const [values, setValues] = useState(initialState);
+    const { name, email, password, error, loading, message, showForm, role } = values;
 
-    const { name, email, password, error, loading, message, showForm } = values;
+    useEffect(() => {
+        isAuth() && Router.push(`/`);
+    }, []);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = e => {
         e.preventDefault();
-        setValues({ ...values, loading: true, error: false })
-        const user = { name, email, password };
-        signup(user)
-            .then(data => {
-                console.log(data);
-                if (data.error) {
-                    setValues({ ...values, error: data.error, loading: false })
-                }
-                else {
-                    setValues({ ...values, name: '', email: '', password: '', error: '', loading: false, message: data.message, showForm: false })
-                }
-            })
+        // console.table({ name, email, password, error, loading, message, showForm });
+        setValues({ ...values, loading: true, error: false });
+        const user = { name, email, password, role };
 
+        signup(user).then(data => {
+            if (data.error) {
+                setValues({ ...values, error: data.error, loading: false });
+            } else {
+                setValues({
+                    ...values,
+                    name: '',
+                    email: '',
+                    password: '',
+                    error: '',
+                    loading: false,
+                    message: data.message,
+                    showForm: false
+                });
+            }
+        });
     };
 
-    const showLoading = () => {
-        if (loading) {
-            return (
-                <div className="alert alert-info">Loading...</div>
-            );
-        }
-    }
-    const showError = () => {
-        if (error) {
-            return (
-                <div className="alert alert-danger">{error}</div>
-            );
-        }
-    }
-
-    const showMessage = () => {
-        if (message) {
-            return (
-                <div className="alert alert-info">{message}</div>
-            );
-        }
-    }
-
     const handleChange = name => e => {
-        setValues({ ...values, error: false, [name]: e.target.value })
-    }
+        setValues({ ...values, error: false, [name]: e.target.value });
+    };
+
+    const showLoading = () => (loading ? <div className="alert alert-info">Loading...</div> : '');
+    const showError = () => (error ? <div className="alert alert-danger">{error}</div> : '');
+    const showMessage = () => (message ? <div className="alert alert-info">{message}</div> : '');
 
     const signupForm = () => {
         return (
-            <Wrapper>
+            <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                    <input
+                        value={name}
+                        onChange={handleChange('name')}
+                        type="text"
+                        className="form-control"
+                        placeholder="Type your name"
+                    />
+                </div>
 
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <input type="text" placeholder="Type your name" className="form-control mb-4" onChange={handleChange('name')} value={name} />
-                        <input type="email" placeholder="Type your email" className="form-control mb-4" onChange={handleChange('email')} value={email} />
-                        <input type="password" placeholder="Type your password" className="form-control mb-4" onChange={handleChange('password')} value={password} />
-                        <div>
-                            <button className="btn btn-primary">Sign Up</button>
-                        </div>
+                <div className="form-group">
+                    <input
+                        value={email}
+                        onChange={handleChange('email')}
+                        type="email"
+                        className="form-control"
+                        placeholder="Type your email"
+                    />
+                </div>
 
-                    </div>
-                </form>
-            </Wrapper>
-        )
-    }
+                <div className="form-group">
+                    <input
+                        value={password}
+                        onChange={handleChange('password')}
+                        type="password"
+                        className="form-control"
+                        placeholder="Type your password"
+                    />
+                </div>
+
+                <div>
+                    <button className="btn btn-primary">Signup</button>
+                </div>
+            </form>
+        );
+    };
 
     return (
         <>
@@ -88,7 +99,7 @@ const SignUpComponent = () => {
             {showMessage()}
             {showForm && signupForm()}
         </>
-    )
-}
+    );
+};
 
-export default SignUpComponent
+export default SignupComponent;

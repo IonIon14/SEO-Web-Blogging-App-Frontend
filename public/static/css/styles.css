@@ -1,0 +1,13 @@
+#nprogress .bar{
+    height:5px !important;
+}
+
+@media (max-width: 768px) {  
+    .feature-image-div{
+        margin-top: 20px;
+    }
+}
+
+.ql-editor {
+    min-height: 300px;
+}

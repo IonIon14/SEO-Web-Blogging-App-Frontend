@@ -1,11 +1,20 @@
-import Layout from "../components/Layout";
+import { Layout, SignInComponent } from "../components";
 import Link from "next/link";
 
 const SignIn = () => {
+
     return (
         <Layout>
-            <h2>SignIn component</h2>
-            <Link href="/"><a>Home</a></Link>
+            <div className="mt-4 mb-4">
+                <h2 className="text-center mb-4">SignIn page</h2>
+                <div className="">
+                    <div className="col-md-6 offset-md-3">
+                        <SignInComponent />
+                    </div>
+                </div>
+            </div>
+
+
         </Layout>
     )
 }
